@@ -42,8 +42,9 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/users', userRoutes);
 
 // Serve static files in production
-if (process.env.NODE_ENV === 'production') {
+if (env.NODE_ENV === 'production') {
   const distPath = path.join(__dirname, '../../client/dist');
+  console.log(`📂 Serving static files from: ${distPath}`);
   app.use(express.static(distPath));
   app.get('*', (req, res) => {
     res.sendFile(path.join(distPath, 'index.html'));
