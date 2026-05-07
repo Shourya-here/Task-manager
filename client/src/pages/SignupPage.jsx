@@ -68,7 +68,7 @@ export default function SignupPage() {
             </h2>
             <p className="text-brand-100/70 text-sm leading-relaxed max-w-xs">
               Create your account and start<br />
-              managing AI projects with<br />
+              managing strategic projects with<br />
               your team today.
             </p>
           </div>

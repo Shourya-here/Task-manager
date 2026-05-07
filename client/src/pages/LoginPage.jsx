@@ -65,7 +65,7 @@ export default function LoginPage() {
               Venture<br className="hidden md:block" /> Management
             </h2>
             <p className="text-brand-100/70 text-sm leading-relaxed max-w-xs">
-              Streamline your AI projects,<br />
+              Streamline your strategic projects,<br />
               manage tasks efficiently,<br />
               and collaborate with your team.
             </p>

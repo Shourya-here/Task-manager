@@ -51,8 +51,8 @@ async function main() {
     update: {},
     create: {
       id: 'seed-project-1',
-      title: 'LLM Fine-tuning',
-      description: 'Optimizing open-source LLMs for domain-specific vertical tasks.',
+      title: 'Infrastructure Modernization',
+      description: 'Updating legacy cloud infrastructure and optimizing scaling protocols.',
       createdBy: admin.id,
     },
   });
@@ -62,8 +62,8 @@ async function main() {
     update: {},
     create: {
       id: 'seed-project-2',
-      title: 'Computer Vision API',
-      description: 'Developing high-speed inference engines for real-time video analytics.',
+      title: 'System Integration API',
+      description: 'Developing high-speed data connectors for cross-platform analytics.',
       createdBy: admin.id,
     },
   });
@@ -92,14 +92,14 @@ async function main() {
 
   // Create tasks
   const tasks = [
-    { title: 'Fine-tune Llama 3-8B', description: 'Run supervised fine-tuning on the proprietary medical dataset.', status: 'IN_PROGRESS', priority: 'HIGH', assignedTo: member1.id, projectId: project1.id, createdBy: admin.id, dueDate: new Date('2026-05-15') },
-    { title: 'Data Labeling for RLHF', description: 'Coordinate with the labeling team to rank model outputs for reward modeling.', status: 'DONE', priority: 'HIGH', assignedTo: member1.id, projectId: project1.id, createdBy: admin.id, dueDate: new Date('2026-05-10') },
-    { title: 'Implement RAG Pipeline', description: 'Integrate Pinecone vector database with LangChain for document retrieval.', status: 'TODO', priority: 'MEDIUM', assignedTo: member1.id, projectId: project1.id, createdBy: admin.id, dueDate: new Date('2026-05-20') },
-    { title: 'CUDA Kernel Optimization', description: 'Optimize custom attention kernels for A100 GPUs.', status: 'TODO', priority: 'LOW', assignedTo: null, projectId: project1.id, createdBy: admin.id, dueDate: new Date('2026-05-25') },
-    { title: 'Model Quantization', description: 'Convert weights to INT8/FP8 for edge device deployment.', status: 'IN_PROGRESS', priority: 'HIGH', assignedTo: member2.id, projectId: project2.id, createdBy: admin.id, dueDate: new Date('2026-05-12') },
-    { title: 'Benchmark Inference Latency', description: 'Measure tokens-per-second across different quantization levels.', status: 'DONE', priority: 'MEDIUM', assignedTo: member2.id, projectId: project2.id, createdBy: admin.id, dueDate: new Date('2026-05-08') },
-    { title: 'Deploy Triton Server', description: 'Set up NVIDIA Triton inference server for model serving.', status: 'TODO', priority: 'MEDIUM', assignedTo: member2.id, projectId: project2.id, createdBy: admin.id, dueDate: new Date('2026-05-30') },
-    { title: 'Bias Evaluation', description: 'Run safety benchmarks to detect gender or racial bias in model generations.', status: 'TODO', priority: 'LOW', assignedTo: null, projectId: project2.id, createdBy: admin.id, dueDate: new Date('2026-04-01') },
+    { title: 'Update Legacy Database', description: 'Run data migration for the new encrypted user repository.', status: 'IN_PROGRESS', priority: 'HIGH', assignedTo: member1.id, projectId: project1.id, createdBy: admin.id, dueDate: new Date('2026-05-15') },
+    { title: 'Security Audit', description: 'Coordinate with the pen-testing team to identify system vulnerabilities.', status: 'DONE', priority: 'HIGH', assignedTo: member1.id, projectId: project1.id, createdBy: admin.id, dueDate: new Date('2026-05-10') },
+    { title: 'Implement Monitoring Pipeline', description: 'Integrate cloud-watch and prometheus for real-time system tracking.', status: 'TODO', priority: 'MEDIUM', assignedTo: member1.id, projectId: project1.id, createdBy: admin.id, dueDate: new Date('2026-05-20') },
+    { title: 'Network Optimization', description: 'Optimize custom load balancers for low-latency delivery.', status: 'TODO', priority: 'LOW', assignedTo: null, projectId: project1.id, createdBy: admin.id, dueDate: new Date('2026-05-25') },
+    { title: 'Data Migration', description: 'Convert legacy records to the new distributed storage format.', status: 'IN_PROGRESS', priority: 'HIGH', assignedTo: member2.id, projectId: project2.id, createdBy: admin.id, dueDate: new Date('2026-05-12') },
+    { title: 'Benchmark System Latency', description: 'Measure response times across different global regions.', status: 'DONE', priority: 'MEDIUM', assignedTo: member2.id, projectId: project2.id, createdBy: admin.id, dueDate: new Date('2026-05-08') },
+    { title: 'Deploy Scalability Server', description: 'Set up auto-scaling groups for high-traffic handling.', status: 'TODO', priority: 'MEDIUM', assignedTo: member2.id, projectId: project2.id, createdBy: admin.id, dueDate: new Date('2026-05-30') },
+    { title: 'Final Review', description: 'Run performance benchmarks to confirm system stability before launch.', status: 'TODO', priority: 'LOW', assignedTo: null, projectId: project2.id, createdBy: admin.id, dueDate: new Date('2026-04-01') },
   ];
 
   for (const task of tasks) {
