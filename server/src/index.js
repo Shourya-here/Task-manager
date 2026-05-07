@@ -1,5 +1,6 @@
 import express from 'express';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -43,8 +44,25 @@ app.use('/api/users', userRoutes);
 
 // Serve static files in production
 if (env.NODE_ENV === 'production') {
-  const distPath = path.join(__dirname, '../../client/dist');
-  console.log(`📂 Serving static files from: ${distPath}`);
+  const possiblePaths = [
+    path.join(__dirname, '../../client/dist'),
+    path.join(process.cwd(), '../client/dist'),
+    path.join(process.cwd(), 'client/dist')
+  ];
+
+  let distPath = possiblePaths[0];
+  for (const p of possiblePaths) {
+    if (fs.existsSync(path.join(p, 'index.html'))) {
+      distPath = p;
+      break;
+    }
+  }
+
+  console.log(`📂 Final Static Path: ${distPath}`);
+  if (!fs.existsSync(path.join(distPath, 'index.html'))) {
+    console.error(`❌ CRITICAL: index.html not found at ${distPath}`);
+  }
+
   app.use(express.static(distPath));
   app.get('*', (req, res) => {
     res.sendFile(path.join(distPath, 'index.html'));
