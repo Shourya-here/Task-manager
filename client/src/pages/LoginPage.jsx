@@ -31,7 +31,12 @@ export default function LoginPage() {
       toast.success('Welcome back!');
       navigate('/dashboard');
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Login failed');
+      if (error.response?.status === 403) {
+        toast.error(error.response.data.message);
+        navigate('/verify-otp', { state: { email: data.email } });
+      } else {
+        toast.error(error.response?.data?.message || 'Login failed');
+      }
     } finally {
       setIsLoading(false);
     }

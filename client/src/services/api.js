@@ -31,6 +31,7 @@ api.interceptors.response.use(
 export const authAPI = {
   signup: (data) => api.post('/auth/signup', data),
   verifyOTP: (data) => api.post('/auth/verify-otp', data),
+  resendOTP: (email) => api.post('/auth/resend-otp', { email }),
   login: (data) => api.post('/auth/login', data),
   getMe: () => api.get('/auth/me'),
 };

@@ -10,8 +10,11 @@ export function useSocket(projectId) {
   useEffect(() => {
     if (!projectId) return;
 
-    // Connect to Socket.IO server
-    socketRef.current = io(import.meta.env.VITE_API_URL || 'http://localhost:5000', {
+    // Determine socket URL: env var > same origin (production) > localhost (dev)
+    const socketUrl = import.meta.env.VITE_API_URL
+      || (import.meta.env.PROD ? window.location.origin : 'http://localhost:5000');
+
+    socketRef.current = io(socketUrl, {
       withCredentials: true,
     });
 

@@ -9,10 +9,26 @@ const generateToken = (userId) => {
   return jwt.sign({ userId }, env.JWT_SECRET, { expiresIn: '7d' });
 };
 
-export const signup = async ({ name, email, password, role }) => {
+export const signup = async ({ name, email: rawEmail, password }) => {
+  const email = rawEmail.toLowerCase();
   const existingUser = await prisma.user.findUnique({ where: { email } });
   if (existingUser) {
-    throw new AppError('Email already registered', 409);
+    if (existingUser.isVerified) {
+      throw new AppError('Email already registered', 409);
+    }
+    // If user exists but not verified, update them with new OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
+    const hashedPassword = await bcrypt.hash(password, 12);
+
+    const user = await prisma.user.update({
+      where: { email },
+      data: { name, password: hashedPassword, role: 'MEMBER', otp, otpExpiresAt },
+      select: { id: true, name: true, email: true, role: true, createdAt: true },
+    });
+
+    await sendOTPEmail(user.email, user.name, otp);
+    return { user, message: 'Verification code resent to your email.' };
   }
 
   const hashedPassword = await bcrypt.hash(password, 12);
@@ -26,7 +42,7 @@ export const signup = async ({ name, email, password, role }) => {
       name, 
       email, 
       password: hashedPassword, 
-      role: role || 'MEMBER',
+      role: 'MEMBER',
       isVerified: false,
       otp,
       otpExpiresAt,
@@ -43,7 +59,8 @@ export const signup = async ({ name, email, password, role }) => {
   };
 };
 
-export const login = async ({ email, password }) => {
+export const login = async ({ email: rawEmail, password }) => {
+  const email = rawEmail.toLowerCase();
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) {
     throw new AppError('Invalid email or password', 401);
@@ -55,7 +72,15 @@ export const login = async ({ email, password }) => {
   }
 
   if (!user.isVerified) {
-    throw new AppError('Please verify your email to continue.', 403);
+    // Auto-resend a fresh OTP so the user has a valid code on the verify page
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
+    await prisma.user.update({
+      where: { email },
+      data: { otp, otpExpiresAt },
+    });
+    await sendOTPEmail(user.email, user.name, otp);
+    throw new AppError('Please verify your email to continue. A new verification code has been sent.', 403);
   }
 
   const token = generateToken(user.id);
@@ -74,7 +99,8 @@ export const getMe = async (userId) => {
   return user;
 };
 
-export const verifyOTP = async ({ email, otp }) => {
+export const verifyOTP = async ({ email: rawEmail, otp }) => {
+  const email = rawEmail.toLowerCase();
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) {
     throw new AppError('User not found', 404);
@@ -92,7 +118,7 @@ export const verifyOTP = async ({ email, otp }) => {
     throw new AppError('OTP has expired. Please request a new one.', 400);
   }
 
-    const updatedUser = await prisma.user.update({
+  const updatedUser = await prisma.user.update({
     where: { email },
     data: {
       isVerified: true,
@@ -104,4 +130,27 @@ export const verifyOTP = async ({ email, otp }) => {
 
   const token = generateToken(updatedUser.id);
   return { user: updatedUser, token };
+};
+
+export const resendOTP = async (rawEmail) => {
+  const email = rawEmail.toLowerCase();
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) {
+    throw new AppError('User not found', 404);
+  }
+
+  if (user.isVerified) {
+    throw new AppError('User is already verified', 400);
+  }
+
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  const otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+  await prisma.user.update({
+    where: { email },
+    data: { otp, otpExpiresAt },
+  });
+
+  await sendOTPEmail(user.email, user.name, otp);
+  return { message: 'New verification code sent to your email.' };
 };

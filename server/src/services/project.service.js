@@ -106,7 +106,7 @@ export const addMember = async (projectId, userId) => {
     include: { user: { select: { id: true, name: true, email: true, role: true } } },
   });
 
-  sendProjectInvitationEmail(user.email, user.name, project.title);
+  await sendProjectInvitationEmail(user.email, user.name, project.title);
 
   return member;
 };

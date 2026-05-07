@@ -27,6 +27,15 @@ export const verifyOTP = async (req, res, next) => {
   }
 };
 
+export const resendOTP = async (req, res, next) => {
+  try {
+    const result = await authService.resendOTP(req.body.email);
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getMe = async (req, res, next) => {
   try {
     const user = await authService.getMe(req.user.id);

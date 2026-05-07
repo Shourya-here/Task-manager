@@ -6,17 +6,18 @@ import { z } from 'zod';
 import { motion } from 'framer-motion';
 import { Compass, Eye, EyeOff } from 'lucide-react';
 import { authAPI } from '../services/api';
+import { useAuth } from '../hooks/useAuth';
 import toast from 'react-hot-toast';
 
 const signupSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Please enter a valid email'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
-  role: z.enum(['ADMIN', 'MEMBER']),
 });
 
 export default function SignupPage() {
   const navigate = useNavigate();
+  const { signup } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -28,11 +29,9 @@ export default function SignupPage() {
   const onSignup = async (data) => {
     setIsLoading(true);
     try {
-      const response = await authAPI.signup(data);
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
-      toast.success('Account created successfully!');
-      window.location.href = '/dashboard';
+      const response = await signup(data);
+      toast.success(response.message || 'Account created! Please verify your email.');
+      navigate('/verify-otp', { state: { email: data.email } });
     } catch (error) {
       toast.error(error.response?.data?.message || 'Signup failed');
     } finally {
@@ -118,15 +117,6 @@ export default function SignupPage() {
               {errors.password && <p className="text-red-500 text-xs mt-1.5 ml-5">{errors.password.message}</p>}
             </div>
 
-            <div>
-              <select 
-                {...register('role')} 
-                className="w-full border border-surface-200 dark:border-surface-700 rounded-full px-5 py-3 text-sm bg-transparent text-surface-900 dark:text-white focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500/30 transition-all appearance-none cursor-pointer"
-              >
-                <option value="MEMBER">Member</option>
-                <option value="ADMIN">Admin</option>
-              </select>
-            </div>
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2">
               <button 

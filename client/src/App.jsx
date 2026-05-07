@@ -12,6 +12,7 @@ import ProjectDetailPage from './pages/ProjectDetailPage';
 import TasksPage from './pages/TasksPage';
 import TeamPage from './pages/TeamPage';
 import ProfilePage from './pages/ProfilePage';
+import VerifyOTPPage from './pages/VerifyOTPPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -28,6 +29,7 @@ export default function App() {
             {/* Public */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
+            <Route path="/verify-otp" element={<VerifyOTPPage />} />
 
             {/* Protected */}
             <Route path="/" element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>

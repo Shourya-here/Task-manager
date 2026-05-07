@@ -28,7 +28,7 @@ export const createTask = async (data, createdBy) => {
   getIO().to(`project_${task.projectId}`).emit('taskCreated', task);
 
   if (task.assignee) {
-    sendTaskAssignmentEmail(task.assignee.email, task.assignee.name, task.title, task.project.title);
+    await sendTaskAssignmentEmail(task.assignee.email, task.assignee.name, task.title, task.project.title);
   }
 
   return task;

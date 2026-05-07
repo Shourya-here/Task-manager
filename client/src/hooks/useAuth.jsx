@@ -38,9 +38,19 @@ export function AuthProvider({ children }) {
 
   const signup = async (userData) => {
     const { data } = await authAPI.signup(userData);
+    return data;
+  };
+
+  const verifyOTP = async (otpData) => {
+    const { data } = await authAPI.verifyOTP(otpData);
     localStorage.setItem('token', data.token);
     localStorage.setItem('user', JSON.stringify(data.user));
     setUser(data.user);
+    return data;
+  };
+
+  const resendOTP = async (email) => {
+    const { data } = await authAPI.resendOTP(email);
     return data;
   };
 
@@ -53,7 +63,7 @@ export function AuthProvider({ children }) {
   const isAdmin = user?.role === 'ADMIN';
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, signup, logout, isAdmin }}>
+    <AuthContext.Provider value={{ user, loading, login, signup, verifyOTP, resendOTP, logout, isAdmin }}>
       {children}
     </AuthContext.Provider>
   );
