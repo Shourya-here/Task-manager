@@ -1,3 +1,23 @@
+# Dependencies
 node_modules
+client/node_modules
+server/node_modules
+
+# Build outputs
 dist
+client/dist
+
+# Environment variables
 .env
+server/.env
+client/.env
+
+# IDE / OS files
+.DS_Store
+.vscode
+.idea
+*.log
+
+# Prisma
+server/prisma/dev.db
+server/prisma/dev.db-journal
