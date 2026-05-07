@@ -16,6 +16,10 @@ export const signup = async ({ name, email, password, role }) => {
   }
 
   const hashedPassword = await bcrypt.hash(password, 12);
+  
+  // Generate 6-digit OTP
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  const otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
   const user = await prisma.user.create({
     data: { 
@@ -23,13 +27,20 @@ export const signup = async ({ name, email, password, role }) => {
       email, 
       password: hashedPassword, 
       role: role || 'MEMBER',
-      isVerified: true,
+      isVerified: false,
+      otp,
+      otpExpiresAt,
     },
     select: { id: true, name: true, email: true, role: true, createdAt: true },
   });
 
-  const token = generateToken(user.id);
-  return { user, token, message: 'Account created successfully.' };
+  // Send OTP email
+  await sendOTPEmail(user.email, user.name, otp);
+
+  return { 
+    user, 
+    message: 'Verification code sent to your email. Please verify to continue.' 
+  };
 };
 
 export const login = async ({ email, password }) => {
@@ -41,6 +52,10 @@ export const login = async ({ email, password }) => {
   const isPasswordValid = await bcrypt.compare(password, user.password);
   if (!isPasswordValid) {
     throw new AppError('Invalid email or password', 401);
+  }
+
+  if (!user.isVerified) {
+    throw new AppError('Please verify your email to continue.', 403);
   }
 
   const token = generateToken(user.id);
